@@ -1,0 +1,32 @@
+name: Test cask
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Casks/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cask-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    runs-on: macos-latest
+    steps:
+      - name: Update Homebrew
+        run: brew update
+
+      - name: Install LNS
+        run: brew install --cask crown-dev-studios/tap/lns
+
+      - name: Verify installation
+        run: |
+          brew list --formula caddy
+          lns version
+          lns doctor
+          test ! -e "$HOME/.lns"
