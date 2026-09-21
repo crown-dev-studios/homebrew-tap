@@ -9,6 +9,12 @@ class Lns < Formula
 
   head "https://github.com/crown-dev-studios/lns.git", branch: "main"
 
+  bottle do
+    root_url "https://github.com/crown-dev-studios/homebrew-tap/releases/download/lns-0.1.0_1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "0464fab03d2a0c264685bb300389697a1354345ac2915e016c79b0b4cca53bc4"
+    sha256 cellar: :any,                 x86_64_linux: "0ef478031a5782ed2f6c5a62d8e62ca1fe81170394b9f3137516028b7abc880c"
+  end
+
   depends_on "go" => :build
   depends_on "caddy"
 
