@@ -1,7 +1,6 @@
 class Lns < Formula
   desc "Run local development services at stable local names"
   homepage "https://github.com/crown-dev-studios/lns"
-  version "0.1.0"
   license "MIT"
 
   depends_on "caddy"
