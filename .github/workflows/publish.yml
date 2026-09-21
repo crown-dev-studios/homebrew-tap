@@ -37,6 +37,25 @@ jobs:
         id: git_setup
         uses: Homebrew/actions/git-user-config@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
 
+      - name: Verify bottle build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        run: |
+          run=$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow tests.yml \
+            --event pull_request \
+            --commit "$HEAD_SHA" \
+            --limit 1 \
+            --json status,conclusion,url)
+          if [[ $(jq -r '.[0].status // empty' <<< "$run") != completed || \
+                $(jq -r '.[0].conclusion // empty' <<< "$run") != success ]]; then
+            echo "No successful bottle build found for $HEAD_SHA" >&2
+            jq . <<< "$run" >&2
+            exit 1
+          fi
+
       - name: Pull bottles
         id: pull_bottles
         env:
