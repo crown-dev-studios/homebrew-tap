@@ -9,6 +9,11 @@ on:
       head_sha:
         description: Expected pull request head commit SHA
         required: true
+      verify_only:
+        description: Verify the published bottle without publishing again
+        required: false
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -18,6 +23,7 @@ defaults:
 
 jobs:
   pr-pull:
+    if: ${{ !inputs.verify_only }}
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -80,6 +86,7 @@ jobs:
 
   verify-bottle:
     needs: pr-pull
+    if: ${{ always() && (inputs.verify_only || needs.pr-pull.result == 'success') }}
     runs-on: macos-26
     permissions:
       contents: read
@@ -101,7 +108,8 @@ jobs:
           brew install crown-dev-studios/tap/lns
           go_after=$(brew list --versions go 2>/dev/null || true)
           test "$go_after" = "$go_before"
-          brew list --formula --poured-from-bottle | grep -qx lns
+          poured_from_bottle=$(brew list --formula --poured-from-bottle)
+          grep -qx lns <<< "$poured_from_bottle"
           brew list --formula caddy >/dev/null
           brew test crown-dev-studios/tap/lns
           lns doctor
