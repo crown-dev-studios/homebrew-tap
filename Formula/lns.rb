@@ -5,6 +5,7 @@ class Lns < Formula
   version "0.1.0"
   sha256 "58d4fe678b1bbe653c7eaa9e517293f7f28459ca6022c5b84661ec968d6adbcd"
   license "MIT"
+  revision 1
 
   head "https://github.com/crown-dev-studios/lns.git", branch: "main"
 
