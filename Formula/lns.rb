@@ -1,31 +1,37 @@
 class Lns < Formula
   desc "Run local development services at stable local names"
   homepage "https://github.com/crown-dev-studios/lns"
-  url "https://github.com/crown-dev-studios/lns/archive/fc92adfea043d2ef53489caaddb8cd83e02480cc.tar.gz"
   version "0.1.0"
-  sha256 "58d4fe678b1bbe653c7eaa9e517293f7f28459ca6022c5b84661ec968d6adbcd"
   license "MIT"
-  revision 1
 
-  head "https://github.com/crown-dev-studios/lns.git", branch: "main"
-
-  bottle do
-    root_url "https://github.com/crown-dev-studios/homebrew-tap/releases/download/lns-0.1.0_1"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "0464fab03d2a0c264685bb300389697a1354345ac2915e016c79b0b4cca53bc4"
-    sha256 cellar: :any,                 x86_64_linux: "0ef478031a5782ed2f6c5a62d8e62ca1fe81170394b9f3137516028b7abc880c"
-  end
-
-  depends_on "go" => :build
   depends_on "caddy"
 
+  on_macos do
+    on_arm do
+      url "https://github.com/crown-dev-studios/lns/releases/download/v0.1.0/lns_0.1.0_darwin_arm64.tar.gz"
+      sha256 "7e83003af8f175af2d86c4129bdabf83a671abb1c01110c7dd11233145a9db19"
+    end
+
+    on_intel do
+      url "https://github.com/crown-dev-studios/lns/releases/download/v0.1.0/lns_0.1.0_darwin_amd64.tar.gz"
+      sha256 "538e1661aa93f825ef700ca453d115e431c47a45ea6d66c682d266451fcb6b82"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/crown-dev-studios/lns/releases/download/v0.1.0/lns_0.1.0_linux_arm64.tar.gz"
+      sha256 "87e81472fcce0945c8c59137098fb6096d0c639955cc75afa5bafddea7bfb305"
+    end
+
+    on_intel do
+      url "https://github.com/crown-dev-studios/lns/releases/download/v0.1.0/lns_0.1.0_linux_amd64.tar.gz"
+      sha256 "730f3eaadc34ab0087ce2f4819ad81fd5c3982452ef2a7e83420106f0e8bf9b2"
+    end
+  end
+
   def install
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-      -X main.commit=fc92adfea043d2ef53489caaddb8cd83e02480cc
-      -X main.buildDate=2026-09-20T21:17:59-04:00
-    ]
-    system "go", "build", *std_go_args(ldflags:), "./cmd/lns"
+    bin.install "lns"
   end
 
   test do
