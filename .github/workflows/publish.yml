@@ -66,13 +66,18 @@ jobs:
       contents: read
     steps:
       - name: Set up Homebrew
+        id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install and verify published bottle
+        env:
+          TAP_PATH: ${{ steps.set-up-homebrew.outputs.repository-path }}
         run: |
           test ! -e "$HOME/.lns"
+          git -C "$TAP_PATH" fetch origin main
+          git -C "$TAP_PATH" checkout --detach FETCH_HEAD
           go_before=$(brew list --versions go 2>/dev/null || true)
           brew install crown-dev-studios/tap/lns
           go_after=$(brew list --versions go 2>/dev/null || true)
